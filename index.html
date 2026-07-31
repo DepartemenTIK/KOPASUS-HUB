@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>KOPASUS IT HUB</title>
+<style>
+  /* ===== GANTI URL DI BAWAH (di <script>) DENGAN URL WEB APP /exec ===== */
+  :root{
+    --rpl:#6366f1; --tkj:#06b6d4; --mm:#ec4899;
+    --accent:#6366f1; --accent-soft:#eef2ff;
+    --ink:#1e293b; --dim:#64748b; --line:#e2e8f0; --card:#ffffff;
+    --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+    --r:20px; --tap:52px;
+    --font:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  }
+  [data-div="TKJ"]{--accent:var(--tkj);--accent-soft:#ecfeff;}
+  [data-div="MM"]{--accent:var(--mm);--accent-soft:#fdf2f8;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{
+    font-family:var(--font); color:var(--ink);
+    background:linear-gradient(160deg,#e0f2fe 0%,#f5f3ff 45%,#fce7f3 100%);
+    background-attachment:fixed; min-height:100dvh;
+  }
+  .hidden{display:none!important;}
+  button{font-family:inherit;cursor:pointer;}
+  img{max-width:100%;}
+
+  /* ---- LOGIN ---- */
+  #login{min-height:100dvh;display:grid;place-items:center;padding:24px;}
+  .login-card{background:var(--card);border-radius:28px;padding:30px 24px;width:100%;max-width:380px;
+    box-shadow:0 24px 60px -20px rgba(99,102,241,.5);text-align:center;}
+  .logo{width:84px;height:84px;margin:0 auto 14px;border-radius:24px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#6366f1,#06b6d4);color:#fff;font-weight:800;font-size:26px;
+    box-shadow:0 12px 30px -8px rgba(99,102,241,.6);}
+  .login-card h1{font-size:22px;margin:0 0 4px;letter-spacing:.5px;}
+  .login-card p.sub{color:var(--dim);font-size:14px;margin:0 0 20px;}
+  .field{text-align:left;margin-bottom:14px;}
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--dim);margin-bottom:6px;}
+  input,select,textarea{width:100%;padding:14px;border:2px solid var(--line);border-radius:14px;font-size:16px;
+    font-family:inherit;color:var(--ink);background:#fff;outline:none;transition:border .15s;}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+  textarea{min-height:80px;resize:vertical;}
+  .btn{width:100%;padding:16px;border:0;border-radius:16px;font-size:17px;font-weight:700;
+    background:linear-gradient(135deg,var(--accent),#22d3ee);color:#fff;
+    box-shadow:0 12px 26px -10px var(--accent);transition:transform .06s;}
+  .btn:active{transform:translateY(2px);}
+  .btn.secondary{background:#fff;color:var(--accent);border:2px solid var(--accent);box-shadow:none;}
+  .btn.ghost{background:var(--accent-soft);color:var(--accent);box-shadow:none;}
+  .btn.small{padding:10px 14px;font-size:14px;border-radius:12px;width:auto;}
+  .btn.block{width:100%;}
+  .err{background:#fef2f2;color:#b91c1c;border-radius:12px;padding:10px;font-size:13px;margin-bottom:12px;}
+
+  /* ---- APP SHELL ---- */
+  #app{min-height:100dvh;padding-bottom:92px;}
+  header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:12px 16px;
+    padding-top:calc(12px + env(safe-area-inset-top));
+    background:rgba(255,255,255,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  header .mini{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--accent),#22d3ee);color:#fff;font-weight:800;font-size:15px;}
+  header .ttl{font-weight:800;font-size:15px;letter-spacing:.3px;}
+  header .tag{font-size:11px;color:var(--accent);font-weight:700;}
+  header .clock{margin-left:auto;font-variant-numeric:tabular-nums;font-size:13px;color:var(--dim);
+    background:#fff;border:1px solid var(--line);border-radius:10px;padding:5px 9px;font-weight:600;}
+  header .out{border:0;background:var(--accent-soft);color:var(--accent);border-radius:10px;
+    width:38px;height:38px;font-size:16px;}
+
+  main{max-width:640px;margin:0 auto;padding:16px;}
+  .card{background:var(--card);border-radius:var(--r);padding:18px;margin-bottom:14px;
+    box-shadow:0 12px 30px -18px rgba(30,41,59,.35);}
+  .hi{display:flex;align-items:center;gap:12px;}
+  .avatar{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--accent),#22d3ee);color:#fff;font-weight:800;font-size:20px;}
+  .hi h2{margin:0;font-size:19px;} .hi .sub{color:var(--dim);font-size:13px;font-weight:600;}
+  h2.title{font-size:20px;margin:4px 2px 14px;}
+
+  .big-actions{display:grid;gap:12px;margin-top:6px;}
+  .big-btn{display:flex;align-items:center;gap:14px;padding:18px;border:0;border-radius:18px;text-align:left;
+    background:linear-gradient(135deg,var(--accent),#22d3ee);color:#fff;box-shadow:0 14px 30px -14px var(--accent);}
+  .big-btn.alt{background:linear-gradient(135deg,#f59e0b,#f97316);box-shadow:0 14px 30px -14px #f59e0b;}
+  .big-btn:disabled{opacity:.5;filter:grayscale(.3);}
+  .big-btn .ic{font-size:30px;} .big-btn .t{font-weight:800;font-size:17px;} .big-btn .d{font-size:12px;opacity:.9;}
+
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .chip{padding:7px 12px;border-radius:999px;font-size:13px;font-weight:700;background:var(--accent-soft);color:var(--accent);}
+  .chip.ok{background:#dcfce7;color:#15803d;} .chip.muted{background:#f1f5f9;color:#64748b;}
+
+  .row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:#f8fafc;margin-bottom:8px;}
+  .row .g{flex:1;min-width:0;} .row .n{font-weight:700;font-size:14px;} .row .s{font-size:12px;color:var(--dim);}
+  .empty{text-align:center;padding:36px 12px;color:var(--dim);} .empty .e{font-size:44px;}
+
+  /* ---- BOTTOM NAV ---- */
+  nav{position:fixed;bottom:0;left:0;right:0;z-index:20;display:flex;justify-content:center;gap:6px;
+    padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-top:1px solid var(--line);}
+  nav button{flex:1;max-width:110px;border:0;background:transparent;color:#94a3b8;border-radius:14px;padding:8px 4px;
+    display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;}
+  nav button .ic{font-size:20px;}
+  nav button.active{color:var(--accent);background:var(--accent-soft);}
+
+  /* ---- MODAL / CAMERA ---- */
+  .modal-bg{position:fixed;inset:0;z-index:50;background:rgba(15,23,42,.55);display:grid;place-items:center;padding:16px;}
+  .modal{background:#fff;border-radius:24px;width:100%;max-width:460px;max-height:90dvh;overflow:auto;padding:18px;}
+  .modal h3{margin:0 0 12px;font-size:18px;}
+  .cam{position:relative;background:#000;border-radius:18px;overflow:hidden;aspect-ratio:3/4;}
+  .cam video,.cam canvas{width:100%;height:100%;object-fit:cover;display:block;}
+  .cam video{transform:scaleX(-1);}
+  .count{position:absolute;inset:0;display:grid;place-items:center;font-size:80px;font-weight:800;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.6);}
+  .toast{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);z-index:80;background:#111827;color:#fff;
+    padding:12px 18px;border-radius:14px;font-size:14px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:90%;}
+  .tabs{display:flex;gap:6px;background:#f1f5f9;padding:5px;border-radius:14px;margin-bottom:14px;}
+  .tabs button{flex:1;border:0;background:transparent;color:#64748b;padding:10px;border-radius:10px;font-weight:700;font-size:14px;}
+  .tabs button.active{background:#fff;color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.08);}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .photo-thumb{width:100%;border-radius:12px;border:1px solid var(--line);}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="login">
+  <div class="login-card">
+    <div class="logo">IT</div>
+    <h1>KOPASUS IT HUB</h1>
+    <p class="sub">Masuk untuk presensi 🎉</p>
+    <div id="loginErr" class="err hidden"></div>
+    <div class="field"><label>NRP</label><input id="inNrp" autocomplete="username" placeholder="Contoh: RPL001"></div>
+    <div class="field"><label>Password</label><input id="inPass" type="password" autocomplete="current-password" placeholder="Password"></div>
+    <button class="btn" id="btnLogin">Masuk 🚀</button>
+    <p class="sub" style="margin-top:16px;font-size:12px;">Password diberikan admin. Lupa? Hubungi admin.</p>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" class="hidden">
+  <header>
+    <div class="mini">IT</div>
+    <div>
+      <div class="ttl">KOPASUS IT</div>
+      <div class="tag" id="hTag">—</div>
+    </div>
+    <div class="clock" id="clock">--:--:--</div>
+    <button class="out" id="btnOut" title="Keluar">⇥</button>
+  </header>
+  <main id="view"></main>
+  <nav id="nav"></nav>
+</div>
+
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+
+<script>
+/* ================== KONFIGURASI ================== */
+/* GANTI dengan URL Web App Apps Script Anda (diakhiri /exec) */
+var API_URL = 'GANTI_DENGAN_URL_WEB_APP/exec';
+
+/* ================== UTIL ================== */
+var $ = function(s,r){return (r||document).querySelector(s);};
+var user = null;
+try { user = JSON.parse(sessionStorage.getItem('kop_user')||'null'); } catch(e){}
+
+function api(action, data){
+  return fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify(Object.assign({action:action},data||{}))})
+    .then(function(r){return r.json();});
+}
+function toast(msg){
+  var t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  $('#toastRoot').appendChild(t); setTimeout(function(){t.style.opacity='0';t.style.transition='.3s';setTimeout(function(){t.remove();},300);},2600);
+}
+function initials(n){ n=(n||'').trim().split(/\s+/); return ((n[0]||'')[0]||'')+((n[1]||'')[0]||''); }
+function esc(s){ return String(s==null?'':s); }
+
+/* ================== LOGIN ================== */
+$('#btnLogin').addEventListener('click', doLogin);
+$('#inPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+$('#inNrp').addEventListener('keydown',function(e){if(e.key==='Enter')$('#inPass').focus();});
+function doLogin(){
+  var nrp=$('#inNrp').value.trim(), pass=$('#inPass').value.trim();
+  var errEl=$('#loginErr'); errEl.classList.add('hidden');
+  if(!nrp||!pass){ errEl.textContent='NRP & password wajib diisi.'; errEl.classList.remove('hidden'); return; }
+  var btn=$('#btnLogin'); btn.textContent='Memeriksa…'; btn.disabled=true;
+  api('login',{nrp:nrp,password:pass}).then(function(res){
+    btn.textContent='Masuk 🚀'; btn.disabled=false;
+    if(!res.ok){ errEl.textContent=res.message; errEl.classList.remove('hidden'); return; }
+    user=res.user; sessionStorage.setItem('kop_user',JSON.stringify(user)); enterApp();
+  }).catch(function(){ btn.textContent='Masuk 🚀'; btn.disabled=false; errEl.textContent='Gagal terhubung ke server. Cek koneksi / URL.'; errEl.classList.remove('hidden'); });
+}
+function logout(){ sessionStorage.removeItem('kop_user'); user=null; location.reload(); }
+$('#btnOut').addEventListener('click',logout);
+
+/* ================== SHELL ================== */
+var routes=[
+  {id:'beranda',label:'Beranda',ic:'🏠'},
+  {id:'presensi',label:'Presensi',ic:'📸'},
+  {id:'riwayat',label:'Riwayat',ic:'📅'}
+];
+function enterApp(){
+  $('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
+  document.body.setAttribute('data-div', user.divisi||'RPL');
+  $('#hTag').textContent = user.divisi + ' • ' + user.nama;
+  var r = routes.slice();
+  if(user.peran==='admin') r.push({id:'admin',label:'Admin',ic:'⚙️'});
+  var nav=$('#nav'); nav.innerHTML='';
+  r.forEach(function(rt){
+    var b=document.createElement('button'); b.dataset.r=rt.id;
+    b.innerHTML='<span class="ic">'+rt.ic+'</span><span>'+rt.label+'</span>';
+    b.onclick=function(){go(rt.id);}; nav.appendChild(b);
+  });
+  startClock(); go('beranda');
+}
+function go(id){
+  document.querySelectorAll('#nav button').forEach(function(b){b.classList.toggle('active',b.dataset.r===id);});
+  var v=$('#view'); v.innerHTML=''; window.scrollTo(0,0);
+  ({beranda:scrBeranda,presensi:scrPresensi,riwayat:scrRiwayat,admin:scrAdmin}[id]||scrBeranda)(v);
+}
+function startClock(){
+  function tick(){ var d=new Date(); $('#clock').textContent=d.toLocaleTimeString('id-ID',{timeZone:'Asia/Jakarta',hour12:false}); }
+  tick(); setInterval(tick,1000);
+}
+
+/* ================== BERANDA ================== */
+function scrBeranda(v){
+  v.innerHTML =
+    '<div class="card"><div class="hi"><div class="avatar">'+initials(user.nama)+'</div>'+
+    '<div><h2>Hai, '+esc(user.nama)+'! 👋</h2><div class="sub">'+esc(user.nrp)+' • Divisi '+esc(user.divisi)+'</div></div></div></div>'+
+    '<div class="card" id="statusCard"><div class="empty">Memuat status…</div></div>';
+  loadStatusInto($('#statusCard'), true);
+}
+function loadStatusInto(card, withButtons){
+  api('getStatus',{nrp:user.nrp}).then(function(s){
+    if(!s.ok){ card.innerHTML='<div class="empty">'+esc(s.message)+'</div>'; return; }
+    var html='<h2 class="title" style="margin-top:0">Status Hari Ini</h2>'+
+      '<div class="chips">'+
+        chip(s.jamDatang?('Datang '+s.jamDatang):'Belum datang', s.jamDatang?'ok':'muted')+
+        chip(s.jamPulang?('Pulang '+s.jamPulang):'Belum pulang', s.jamPulang?'ok':'muted')+
+        (s.piket?chip('Piket: '+s.piket, s.piket==='ya'?'ok':'muted'):'')+
+      '</div>';
+    if(withButtons){
+      html+='<div class="big-actions" style="margin-top:16px">'+
+        '<button class="big-btn" id="bDatang" '+(s.canArrive?'':'disabled')+'><span class="ic">📸</span><span><div class="t">Presensi Datang</div><div class="d">Ambil selfie kedatangan</div></span></button>'+
+        '<button class="big-btn alt" id="bPulang" '+(s.canDepart?'':'disabled')+'><span class="ic">🏁</span><span><div class="t">Presensi Pulang</div><div class="d">Ambil selfie kepulangan</div></span></button>'+
+      '</div>';
+      if(!s.canArrive && !s.canDepart && s.jamPulang) html+='<p class="sub" style="text-align:center;color:#15803d;font-weight:700;margin-top:14px">✅ Presensi hari ini lengkap. Mantap!</p>';
+    }
+    card.innerHTML=html;
+    if(withButtons){
+      if($('#bDatang')) $('#bDatang').onclick=function(){flowPresensi('datang');};
+      if($('#bPulang')) $('#bPulang').onclick=function(){flowPresensi('pulang');};
+    }
+  }).catch(function(){ card.innerHTML='<div class="empty">Gagal memuat status.</div>'; });
+}
+function chip(t,k){ return '<span class="chip '+(k||'')+'">'+esc(t)+'</span>'; }
+
+/* ================== PRESENSI ================== */
+function scrPresensi(v){
+  v.innerHTML='<h2 class="title">Presensi 📸</h2><div class="card" id="pStatus"><div class="empty">Memuat…</div></div>';
+  loadStatusInto($('#pStatus'), true);
+}
+function flowPresensi(mode){
+  if(mode==='datang'){
+    // tanya piket dulu
+    openModal('Presensi Datang', function(body, close){
+      body.innerHTML='<p class="sub" style="color:#64748b;margin-top:0">Apakah kamu bertugas <b>piket</b> hari ini?</p>'+
+        '<div class="split"><button class="btn ghost" id="pkY">✅ Ya, piket</button><button class="btn secondary" id="pkN">Tidak</button></div>';
+      $('#pkY',body).onclick=function(){ close(); camera('datang',{piket:true}); };
+      $('#pkN',body).onclick=function(){ close(); camera('datang',{piket:false}); };
+    });
+  } else {
+    camera('pulang',{});
+  }
+}
+function camera(mode, extra){
+  openModal(mode==='datang'?'Selfie Datang':'Selfie Pulang', function(body, close){
+    body.innerHTML='<div class="cam"><video id="vid" autoplay playsinline muted></video><div class="count hidden" id="cnt"></div></div>'+
+      '<p class="sub" style="text-align:center;color:#64748b">Posisikan wajah, lalu ambil foto.</p>'+
+      '<button class="btn block" id="snap">📸 Ambil Foto</button>'+
+      '<button class="btn secondary block" id="retake" style="margin-top:8px;display:none">↺ Ulangi</button>'+
+      (mode==='pulang'?'<div class="field" style="margin-top:10px"><label>Catatan (opsional)</label><textarea id="note" placeholder="Kegiatan / catatan pulang"></textarea></div>':'');
+    var stream=null, shot=null, video=$('#vid',body);
+    navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false})
+      .then(function(s){stream=s;video.srcObject=s;})
+      .catch(function(){ body.innerHTML='<div class="empty"><div class="e">📷</div><p>Tidak bisa membuka kamera. Izinkan akses kamera di browser lalu coba lagi.</p><button class="btn" id="cx">Tutup</button></div>'; $('#cx',body).onclick=close; });
+    function stop(){ if(stream){stream.getTracks().forEach(function(t){t.stop();});stream=null;} }
+
+    $('#snap',body).onclick=function(){
+      var cnt=$('#cnt',body); cnt.classList.remove('hidden'); var n=3; cnt.textContent=n;
+      var iv=setInterval(function(){ n--; if(n<=0){clearInterval(iv);cnt.classList.add('hidden');capture();} else cnt.textContent=n; },700);
+    };
+    function capture(){
+      var vw=video.videoWidth, vh=video.videoHeight; if(!vw){toast('Kamera belum siap');return;}
+      var max=420, sc=Math.min(1,max/Math.max(vw,vh)), w=Math.round(vw*sc), h=Math.round(vh*sc);
+      var c=document.createElement('canvas'); c.width=w;c.height=h; var x=c.getContext('2d');
+      x.translate(w,0);x.scale(-1,1); x.drawImage(video,0,0,w,h); x.setTransform(1,0,0,1,0,0);
+      // watermark
+      var wib=new Date().toLocaleString('id-ID',{timeZone:'Asia/Jakarta',hour12:false});
+      var fs=Math.max(11,Math.round(w*0.045)); x.font='bold '+fs+'px '+getComputedStyle(document.body).fontFamily;
+      var lines=[user.nama+' ('+user.nrp+')', user.divisi+' • '+wib+' WIB'];
+      var bh=fs*lines.length+14; var gr=x.createLinearGradient(0,h-bh-16,0,h);
+      gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(0,0,0,.7)'); x.fillStyle=gr; x.fillRect(0,h-bh-16,w,bh+16);
+      x.fillStyle='#fff'; lines.forEach(function(l,i){x.fillText(l,10,h-bh+fs+i*fs);});
+      shot=c.toDataURL('image/jpeg',0.55);
+      stop(); video.replaceWith(c); c.style.width='100%'; c.style.borderRadius='18px';
+      $('#snap',body).style.display='none'; var rt=$('#retake',body); rt.style.display='block';
+      rt.onclick=function(){ close(); camera(mode,extra); };
+      // ganti tombol snap jadi kirim
+      var send=document.createElement('button'); send.className='btn block'; send.style.marginTop='8px'; send.textContent='✅ Kirim Presensi';
+      rt.parentNode.insertBefore(send, rt);
+      send.onclick=function(){
+        send.disabled=true; send.textContent='Mengirim…';
+        var act=mode==='datang'?'submitArrival':'submitDeparture';
+        var payload={nrp:user.nrp,foto:shot};
+        if(mode==='datang')payload.piket=extra.piket; else payload.catatan=($('#note',body)||{}).value||'';
+        api(act,payload).then(function(res){ close(); toast(res.message||(res.ok?'Berhasil':'Gagal')); go('beranda'); })
+          .catch(function(){ send.disabled=false; send.textContent='✅ Kirim Presensi'; toast('Gagal mengirim. Cek koneksi.'); });
+      };
+    }
+    body._onClose=stop;
+  });
+}
+
+/* ================== RIWAYAT ================== */
+function scrRiwayat(v){
+  v.innerHTML='<h2 class="title">Riwayat 📅</h2><div class="card" id="hist"><div class="empty">Memuat…</div></div>';
+  api('getHistory',{nrp:user.nrp}).then(function(res){
+    var c=$('#hist');
+    if(!res.ok||!res.rows.length){ c.innerHTML='<div class="empty"><div class="e">📅</div><p>Belum ada riwayat presensi.</p></div>'; return; }
+    c.innerHTML='';
+    res.rows.forEach(function(r){
+      c.innerHTML+='<div class="row"><div class="g"><div class="n">'+esc(r.tanggal)+'</div>'+
+        '<div class="s">Datang '+(r.datang||'—')+' • Pulang '+(r.pulang||'—')+(r.piket==='ya'?' • 🧹 Piket':'')+'</div></div>'+
+        '<span class="chip '+(r.pulang?'ok':'muted')+'">'+(r.pulang?'Lengkap':(r.datang?'Belum pulang':'-'))+'</span></div>';
+    });
+  }).catch(function(){ $('#hist').innerHTML='<div class="empty">Gagal memuat.</div>'; });
+}
+
+/* ================== ADMIN ================== */
+function scrAdmin(v){
+  v.innerHTML='<h2 class="title">Admin ⚙️</h2>'+
+    '<div class="tabs"><button class="active" data-t="siswa">Siswa</button><button data-t="presensi">Presensi</button></div>'+
+    '<div id="adminBody"></div>';
+  v.querySelectorAll('.tabs button').forEach(function(b){
+    b.onclick=function(){ v.querySelectorAll('.tabs button').forEach(function(x){x.classList.remove('active');}); b.classList.add('active'); (b.dataset.t==='siswa'?adminSiswa:adminPresensi)(); };
+  });
+  adminSiswa();
+}
+function adminSiswa(){
+  var b=$('#adminBody'); b.innerHTML='<button class="btn block" id="addS" style="margin-bottom:14px">➕ Buat Akun Baru</button><div id="sList"><div class="empty">Memuat…</div></div>';
+  $('#addS').onclick=function(){ formSiswa(null); };
+  api('listStudents',{adminNrp:user.nrp}).then(function(res){
+    var l=$('#sList'); if(!res.ok){ l.innerHTML='<div class="empty">'+esc(res.message)+'</div>'; return; }
+    l.innerHTML='';
+    res.rows.forEach(function(u){
+      var row=document.createElement('div'); row.className='row';
+      row.innerHTML='<div class="avatar" style="width:42px;height:42px;font-size:15px">'+initials(u.nama)+'</div>'+
+        '<div class="g"><div class="n">'+esc(u.nama)+(u.peran==='admin'?' 👑':'')+'</div><div class="s">'+esc(u.nrp)+' • '+esc(u.divisi)+' • pass: '+esc(u.password)+(u.aktif!=='ya'?' • nonaktif':'')+'</div></div>';
+      var ed=document.createElement('button'); ed.className='btn small ghost'; ed.textContent='Edit'; ed.onclick=function(){formSiswa(u);};
+      row.appendChild(ed); l.appendChild(row);
+    });
+  }).catch(function(){ $('#sList').innerHTML='<div class="empty">Gagal memuat.</div>'; });
+}
+function formSiswa(u){
+  openModal(u?'Edit Akun':'Akun Baru', function(body, close){
+    body.innerHTML=
+      fld('NRP','f_nrp',u?u.nrp:'')+fld('Nama','f_nama',u?u.nama:'')+fld('Password','f_pass',u?u.password:'123456')+
+      '<div class="field"><label>Divisi</label><select id="f_div">'+opt(['RPL','TKJ','MM'],u?u.divisi:'RPL')+'</select></div>'+
+      '<div class="field"><label>Peran</label><select id="f_role">'+opt2([['siswa','Siswa'],['admin','Admin']],u?u.peran:'siswa')+'</select></div>'+
+      '<div class="field"><label>Status</label><select id="f_act">'+opt2([['ya','Aktif'],['tidak','Nonaktif']],u?u.aktif:'ya')+'</select></div>'+
+      '<button class="btn block" id="saveS">💾 Simpan</button>'+
+      (u&&u.peran!=='admin'?'<button class="btn secondary block" id="delS" style="margin-top:8px;color:#ef4444;border-color:#ef4444">🗑️ Hapus Akun</button>':'');
+    $('#saveS',body).onclick=function(){
+      var payload={adminNrp:user.nrp, originalNrp:u?u.nrp:'', nrp:$('#f_nrp',body).value.trim(), nama:$('#f_nama',body).value.trim(),
+        password:$('#f_pass',body).value.trim(), divisi:$('#f_div',body).value, peran:$('#f_role',body).value, aktif:$('#f_act',body).value};
+      if(!payload.nrp||!payload.nama){ toast('NRP & nama wajib'); return; }
+      api('saveStudent',payload).then(function(res){ close(); toast(res.message||'OK'); adminSiswa(); });
+    };
+    if($('#delS',body)) $('#delS',body).onclick=function(){
+      if(!confirm('Hapus akun '+u.nama+'?'))return;
+      api('deleteStudent',{adminNrp:user.nrp,nrp:u.nrp}).then(function(res){ close(); toast(res.message||'OK'); adminSiswa(); });
+    };
+  });
+}
+function adminPresensi(){
+  var b=$('#adminBody'); var today=new Date().toLocaleDateString('sv',{timeZone:'Asia/Jakarta'});
+  b.innerHTML='<div class="split" style="margin-bottom:12px">'+
+    '<div class="field" style="margin:0"><label>Tanggal</label><input type="date" id="aDate" value="'+today+'"></div>'+
+    '<div class="field" style="margin:0"><label>Divisi</label><select id="aDiv">'+opt(['','RPL','TKJ','MM'],'')+'</select></div></div>'+
+    '<div id="aList"><div class="empty">Memuat…</div></div>';
+  function load(){
+    api('listAttendance',{adminNrp:user.nrp,tanggal:$('#aDate').value,divisi:$('#aDiv').value}).then(function(res){
+      var l=$('#aList'); if(!res.ok){l.innerHTML='<div class="empty">'+esc(res.message)+'</div>';return;}
+      if(!res.rows.length){ l.innerHTML='<div class="empty"><div class="e">🗂️</div><p>Belum ada presensi pada tanggal ini.</p></div>'; return; }
+      l.innerHTML='';
+      res.rows.forEach(function(r){
+        var row=document.createElement('div'); row.className='row';
+        row.innerHTML='<div class="g"><div class="n">'+esc(r.nama)+'</div><div class="s">'+esc(r.nrp)+' • '+esc(r.divisi)+' • Datang '+(r.datang||'—')+' • Pulang '+(r.pulang||'—')+(r.piket==='ya'?' • 🧹':'')+'</div></div>';
+        if(r.fotoDatang){ var pv=document.createElement('button'); pv.className='btn small ghost'; pv.textContent='📷'; pv.onclick=function(){viewPhotos(r);}; row.appendChild(pv); }
+        l.appendChild(row);
+      });
+    });
+  }
+  $('#aDate').onchange=load; $('#aDiv').onchange=load; load();
+}
+function viewPhotos(r){
+  openModal('Foto — '+r.nama, function(body){
+    body.innerHTML='<div class="split">'+
+      '<div><div class="s" style="margin-bottom:4px">Datang '+(r.datang||'')+'</div>'+(r.fotoDatang?'<img class="photo-thumb" src="'+r.fotoDatang+'">':'<div class="empty">—</div>')+'</div>'+
+      '<div><div class="s" style="margin-bottom:4px">Pulang '+(r.pulang||'')+'</div>'+(r.fotoPulang?'<img class="photo-thumb" src="'+r.fotoPulang+'">':'<div class="empty">—</div>')+'</div></div>';
+  });
+}
+
+/* ================== MODAL & FORM HELPERS ================== */
+function openModal(title, build){
+  var bg=document.createElement('div'); bg.className='modal-bg';
+  var m=document.createElement('div'); m.className='modal';
+  m.innerHTML='<h3>'+esc(title)+'</h3>'; var body=document.createElement('div'); m.appendChild(body);
+  bg.appendChild(m); $('#modalRoot').appendChild(bg);
+  function close(){ if(body._onClose)body._onClose(); bg.remove(); }
+  bg.onclick=function(e){ if(e.target===bg) close(); };
+  build(body, close);
+}
+function fld(label,id,val){ return '<div class="field"><label>'+label+'</label><input id="'+id+'" value="'+esc(val).replace(/"/g,'&quot;')+'"></div>'; }
+function opt(arr,sel){ return arr.map(function(a){return '<option value="'+a+'"'+(a===sel?' selected':'')+'>'+(a||'Semua')+'</option>';}).join(''); }
+function opt2(arr,sel){ return arr.map(function(a){return '<option value="'+a[0]+'"'+(a[0]===sel?' selected':'')+'>'+a[1]+'</option>';}).join(''); }
+
+/* ================== START ================== */
+if(user){ enterApp(); }
+</script>
+</body>
+</html>
